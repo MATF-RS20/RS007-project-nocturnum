@@ -61,6 +61,8 @@ void ANocturnumCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
+	DetectBlockingObjects();
+
 	if (CursorToWorld != nullptr)
 	{
 		if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
@@ -96,4 +98,42 @@ void ANocturnumCharacter::SetSelected() {
 void ANocturnumCharacter::SetDeselected() {
 	CursorToWorld->SetVisibility(false);
 }
+
+void ANocturnumCharacter::DetectBlockingObjects() {
+	FVector start = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	FVector end = this->GetActorLocation();
+
+	// An array for storing objects that we hit, and an array for storing our fading objects 
+	TArray<FHitResult> hits;
+	TArray<AHidableObject*> ObjectsHitInThisPass;
+
+	// Cast the ray
+	GetWorld()->LineTraceMultiByObjectType(hits, start, end, FCollisionObjectQueryParams(ECC_WorldDynamic));
+
+	for (FHitResult hit : hits) {
+		if (hit.bBlockingHit) {
+			AHidableObject* obj = Cast<AHidableObject>(hit.Actor.Get());
+			if (obj) {
+				obj->HideObject();
+				ObjectsHitInThisPass.AddUnique(obj);
+				BlockingObjects.AddUnique(obj);
+			}
+		}
+	}
+
+	TArray<AHidableObject*> ObjectsToRemove;
+	for (AHidableObject* obj : BlockingObjects) {
+		if (!ObjectsHitInThisPass.Contains(obj)) {
+			obj->ShowObject();
+			ObjectsToRemove.Add(obj);
+		}
+	}
+
+	for (AHidableObject* obj : ObjectsToRemove) {
+		ObjectsToRemove.Remove(obj);
+	}
+
+}
+
+
 
