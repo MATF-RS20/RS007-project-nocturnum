@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HidableObject.h"
 #include "GameFramework/Character.h"
 #include "NocturnumCharacter.generated.h"
 
@@ -39,5 +40,8 @@ private:
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
+
+	TArray<AHidableObject*> BlockingObjects;
+	virtual void DetectBlockingObjects();
 };
 
