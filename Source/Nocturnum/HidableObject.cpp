@@ -10,7 +10,7 @@ AHidableObject::AHidableObject()
 	PrimaryActorTick.bCanEverTick = true;
 
 	ObjectMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wall Mesh Component"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Geometry/Meshes/1M_Cube_Chamfer.1M_Cube_Chamfer'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Geometry/Meshes/1M_Cube.1M_Cube'"));
 	UStaticMesh* Asset = MeshAsset.Object;
 	ObjectMeshComponent->SetStaticMesh(Asset);
 

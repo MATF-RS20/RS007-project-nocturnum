@@ -3,6 +3,7 @@
 
 #include "NocturnumPlayerController.h"
 #include "AI/Navigation//NavigationSystem.h"
+#include "Blueprint/UserWidget.h"
 #include "DrawDebugHelpers.h"
 #include "Engine.h"
 

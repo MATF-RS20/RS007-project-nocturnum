@@ -19,6 +19,12 @@ public:
 	virtual void SetupInputComponent() override;
 
 	ASelectionHUD* HUDPtr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+		TSubclassOf<class UUserWidget> HealthBar;
+
+	UUserWidget* HealthBarPtr;
+
 protected:
 	UFUNCTION()
 		void SelectionPressed();

@@ -52,9 +52,31 @@ ANocturnumCharacter::ANocturnumCharacter()
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 	CursorToWorld->SetVisibility(false);
 
+
+	//Create a selection ring decal
+	SelectionDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("Selection Decal"));
+	SelectionDecal->SetupAttachment(RootComponent);
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterial(TEXT("Material'/Game/TopDownCPP/Blueprints/SelectionRingDecal.SelectionRingDecal'"));
+	if (DecalMaterial.Succeeded()) {
+		SelectionDecal->SetDecalMaterial(DecalMaterial.Object);
+
+		// Izracunatri parametri
+		SelectionDecal->RelativeLocation = FVector(0.f, 0.f, -80.f);
+		SelectionDecal->DecalSize = FVector(32.f, 64.f, 64.f);
+		SelectionDecal->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
+		SelectionDecal->SetVisibility(false);
+	}
+
+
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	// Health parameters
+	MaxHealth = 100.0f;
+	CurrentHealth = MaxHealth;
+	HealthRegenRate = 0.0f;
 }
 
 void ANocturnumCharacter::Tick(float DeltaSeconds)
@@ -92,12 +114,25 @@ void ANocturnumCharacter::Tick(float DeltaSeconds)
 }
 
 void ANocturnumCharacter::SetSelected() {
-	CursorToWorld->SetVisibility(true);
+	//CursorToWorld->SetVisibility(false);
+	SelectionDecal->SetVisibility(true);
 }
 
 void ANocturnumCharacter::SetDeselected() {
-	CursorToWorld->SetVisibility(false);
+	//CursorToWorld->SetVisibility(false);
+	SelectionDecal->SetVisibility(false);
 }
+
+float ANocturnumCharacter::GetMaxHealth()
+{
+	return MaxHealth;
+}
+
+float ANocturnumCharacter::GetCurrentHealth()
+{
+	return CurrentHealth;
+}
+
 
 void ANocturnumCharacter::DetectBlockingObjects() {
 	FVector start = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();

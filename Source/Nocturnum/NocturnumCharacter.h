@@ -28,6 +28,12 @@ public:
 	void SetSelected();
 	void SetDeselected();
 
+	UFUNCTION(BlueprintPure, Category = "Health")
+		float GetMaxHealth();
+	UFUNCTION(BlueprintPure, Category = "Health")
+		float GetCurrentHealth();
+
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -41,7 +47,23 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
+	// A selection decal for our character
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		UDecalComponent* SelectionDecal;
+
+	
 	TArray<AHidableObject*> BlockingObjects;
 	virtual void DetectBlockingObjects();
+
+	// Health parameters
+	UPROPERTY(EditAnywhere, Category = "Health")
+		float MaxHealth;
+	UPROPERTY(EditAnywhere, Category = "Health")
+		float CurrentHealth;
+	UPROPERTY(EditAnywhere, Category = "Health")
+		float HealthRegenRate;
+
+	
+
 };
 

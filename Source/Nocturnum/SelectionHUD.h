@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "NocturnumCharacter.h"
+#include "EngineUtils.h"
 #include "SelectionHUD.generated.h"
 
 
@@ -15,6 +16,7 @@ class NOCTURNUM_API ASelectionHUD : public AHUD
 
 public:
 	virtual void DrawHUD() override;
+	void DrawHealthBars() const;
 	UPROPERTY()
 		FVector2D InitialPoint;
 	UPROPERTY()
@@ -27,4 +29,8 @@ public:
 		bool bStartSelecting = false;
 	UPROPERTY()
 		TArray <ANocturnumCharacter*> SelectedActors;
+	UPROPERTY()
+		TArray <AActor*> AllActors;
+
+		
 };
