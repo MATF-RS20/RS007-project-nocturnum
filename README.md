@@ -6,4 +6,4 @@
 * Marko Kostovski, ai15233@alas.matf.bg.ac.rs
 
 RTS dungeon style igra, sa proceduralnom dungeon generacijom i AI combat sistemom <br>
-Za izradu se koristi Unreal Engine 4
+Za izradu se koristi Unreal Engine 4.18
