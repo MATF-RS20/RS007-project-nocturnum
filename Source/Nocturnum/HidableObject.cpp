@@ -17,16 +17,17 @@ AHidableObject::AHidableObject()
 
 	ShouldHide = false;
 	ShouldShow = false;
-	FinalFadeAmount = 0.4f; // Minimum Opacity
-	CurrentFade = 1.0f;		// Maximum Opacity by default
-	FadeRate = 2.0f;		// Rate at which to fade between max and min opacity
+	FinalFadeAmount = 0.25f; // Minimum Opacity
+	InitialFadeAmount = 1.0f;		// Maximum Opacity by default
+	CurrentFade = InitialFadeAmount;
+	FadeRate = 1.50f;		// Rate at which to fade between max and min opacity
 	
-	 // Load our translucent material 
-	static ConstructorHelpers::FObjectFinder<UMaterial> t_Mat(TEXT("Material'/Game/Materials/MTranslucentDefault.MTranslucentDefault'"));
+	 // Ucitamo transparentni materijal
+	static ConstructorHelpers::FObjectFinder<UMaterial> t_Mat(TEXT("Material'/Game/Materials/MDitheredDefault.MDitheredDefault'"));
 	if (t_Mat.Object != NULL) {
-		TranslucentMaterial = t_Mat.Object;
+		DitheredMaterial = t_Mat.Object;
 	}
-	// Load our opaque material
+	// Ucitamo solidni materijal
 	static ConstructorHelpers::FObjectFinder<UMaterial> o_Mat(TEXT("Material'/Game/Materials/MOpaqueDefault.MOpaqueDefault'"));
 	if (o_Mat.Object != NULL) {
 		OpaqueMaterial = o_Mat.Object;
@@ -56,9 +57,8 @@ void AHidableObject::Tick(float DeltaTime)
 			ShouldHide = false;
 		}
 		// Set the translucent material's Opacity property to CurrentFade
-		//ObjectMeshComponent->CreateAndSetMaterialInstanceDynamic(0)->SetScalarParameterValue(TEXT("Opacity"), CurrentFade);
-		ObjectMeshComponent->SetScalarParameterValueOnMaterials(TEXT("Opacity"), CurrentFade);
-		
+		ObjectMeshComponent->SetScalarParameterValueOnMaterials(TEXT("DitherOpacity"), CurrentFade);
+
 
 	}
 	// If this wall should be showing, increment CurrentFade by our FadeRate
@@ -72,9 +72,9 @@ void AHidableObject::Tick(float DeltaTime)
 			ShouldShow = false;
 			ChangeMeshMaterialToOpaque();
 		}
-		// Set the translucent material's Opacity property to CurrentFade
-		//ObjectMeshComponent->CreateAndSetMaterialInstanceDynamic(0)->SetScalarParameterValue(TEXT("Opacity"), CurrentFade);
-		ObjectMeshComponent->SetScalarParameterValueOnMaterials(TEXT("Opacity"), CurrentFade);
+		else {
+			ObjectMeshComponent->SetScalarParameterValueOnMaterials(TEXT("DitherOpacity"), CurrentFade);
+		}
 	}
 }
 
@@ -82,7 +82,8 @@ void AHidableObject::HideObject() {
 	if (!ShouldHide) {
 		ShouldShow = false;
 		ShouldHide = true;
-		ChangeMeshMaterialToTranslucent();
+		ChangeMeshMaterialToDithered();
+		ObjectMeshComponent->SetScalarParameterValueOnMaterials(TEXT("DitherOpacity"), CurrentFade);
 	}
 }
 
@@ -99,9 +100,8 @@ void AHidableObject::ChangeMeshMaterialToOpaque() {
 	}
 }
 
-void AHidableObject::ChangeMeshMaterialToTranslucent() {
-	if (TranslucentMaterial){
-		ObjectMeshComponent->SetMaterial(0, TranslucentMaterial);
+void AHidableObject::ChangeMeshMaterialToDithered() {
+	if (DitheredMaterial){
+		ObjectMeshComponent->SetMaterial(0, DitheredMaterial);
 	}
 }
-

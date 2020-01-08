@@ -136,38 +136,93 @@ float ANocturnumCharacter::GetCurrentHealth()
 
 void ANocturnumCharacter::DetectBlockingObjects() {
 	FVector start = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
-	FVector end = this->GetActorLocation();
+	float ScaleParamZ = this->GetActorScale().Z * 80.0f;
+	float ScaleParamY = this->GetActorScale().Y * 40.0f;
+	// Middle section
+	FVector HeadMid = this->GetActorLocation() + FVector(0.0f, 0.0f, ScaleParamZ); // Aiming for the head
+	FVector TorsoMid = this->GetActorLocation(); // Aiming for the middle
+	FVector LegsMid = this->GetActorLocation() + FVector(0.0f, 0.0f, -ScaleParamZ); // Aiming for the feet
+
+	// Left section
+	FVector HeadLeft = this->GetActorLocation() + FVector(0.0f, ScaleParamY, ScaleParamZ); // Aiming for the head
+	FVector TorsoLeft = this->GetActorLocation(); // Aiming for the middle
+	FVector LegsLeft = this->GetActorLocation() + FVector(0.0f, ScaleParamY, -ScaleParamZ); // Aiming for the feet
+
+	// Right section
+	FVector HeadRight = this->GetActorLocation() + FVector(0.0f, -ScaleParamY, ScaleParamZ); // Aiming for the head
+	FVector TorsoRight = this->GetActorLocation(); // Aiming for the middle
+	FVector LegsRight = this->GetActorLocation() + FVector(0.0f, -ScaleParamY, -ScaleParamZ); // Aiming for the feet
 
 	// An array for storing objects that we hit, and an array for storing our fading objects 
-	TArray<FHitResult> hits;
+	TArray<FHitResult> Hits1;
+	TArray<FHitResult> Hits2;
+	TArray<FHitResult> Hits3;
+	TArray<FHitResult> Hits4;
+	TArray<FHitResult> Hits5;
+	TArray<FHitResult> Hits6;
+	TArray<FHitResult> Hits7;
+	TArray<FHitResult> Hits8;
+	TArray<FHitResult> Hits9;
 	TArray<AHidableObject*> ObjectsHitInThisPass;
 
-	// Cast the ray
-	GetWorld()->LineTraceMultiByObjectType(hits, start, end, FCollisionObjectQueryParams(ECC_WorldDynamic));
+	// Cast rays
+	GetWorld()->LineTraceMultiByObjectType(Hits1, start, HeadMid, FCollisionObjectQueryParams(ECC_WorldDynamic));
+	GetWorld()->LineTraceMultiByObjectType(Hits2, start, TorsoMid, FCollisionObjectQueryParams(ECC_WorldDynamic));
+	GetWorld()->LineTraceMultiByObjectType(Hits3, start, LegsMid, FCollisionObjectQueryParams(ECC_WorldDynamic));
 
-	for (FHitResult hit : hits) {
-		if (hit.bBlockingHit) {
-			AHidableObject* obj = Cast<AHidableObject>(hit.Actor.Get());
-			if (obj) {
-				obj->HideObject();
-				ObjectsHitInThisPass.AddUnique(obj);
-				BlockingObjects.AddUnique(obj);
-			}
-		}
+	GetWorld()->LineTraceMultiByObjectType(Hits4, start, HeadLeft, FCollisionObjectQueryParams(ECC_WorldDynamic));
+	GetWorld()->LineTraceMultiByObjectType(Hits5, start, TorsoLeft, FCollisionObjectQueryParams(ECC_WorldDynamic));
+	GetWorld()->LineTraceMultiByObjectType(Hits6, start, LegsLeft, FCollisionObjectQueryParams(ECC_WorldDynamic));
+
+	GetWorld()->LineTraceMultiByObjectType(Hits7, start, HeadRight, FCollisionObjectQueryParams(ECC_WorldDynamic));
+	GetWorld()->LineTraceMultiByObjectType(Hits8, start, TorsoRight, FCollisionObjectQueryParams(ECC_WorldDynamic));
+	GetWorld()->LineTraceMultiByObjectType(Hits9, start, LegsRight, FCollisionObjectQueryParams(ECC_WorldDynamic));
+
+	TArray<AHidableObject*> Objects;
+	AddHitsToObjectList(Hits1, Objects);
+	AddHitsToObjectList(Hits2, Objects);
+	AddHitsToObjectList(Hits3, Objects);
+
+	AddHitsToObjectList(Hits4, Objects);
+	AddHitsToObjectList(Hits5, Objects);
+	AddHitsToObjectList(Hits6, Objects);
+
+	AddHitsToObjectList(Hits7, Objects);
+	AddHitsToObjectList(Hits8, Objects);
+	AddHitsToObjectList(Hits9, Objects);
+
+	for (AHidableObject* Obj : Objects) {
+		Obj->HideObject();
+		ObjectsHitInThisPass.AddUnique(Obj);
+		BlockingObjects.AddUnique(Obj);
 	}
 
 	TArray<AHidableObject*> ObjectsToRemove;
-	for (AHidableObject* obj : BlockingObjects) {
-		if (!ObjectsHitInThisPass.Contains(obj)) {
-			obj->ShowObject();
-			ObjectsToRemove.Add(obj);
+	for (AHidableObject* Obj : BlockingObjects) {
+		if (!ObjectsHitInThisPass.Contains(Obj)) {
+			Obj->ShowObject();
+			ObjectsToRemove.Add(Obj);
 		}
 	}
 
-	for (AHidableObject* obj : ObjectsToRemove) {
-		ObjectsToRemove.Remove(obj);
+	for (AHidableObject* Obj : ObjectsToRemove) {
+		ObjectsToRemove.Remove(Obj);
 	}
 
+}
+
+void ANocturnumCharacter::AddHitsToObjectList(const TArray<FHitResult>& HitList, TArray<AHidableObject*>& Objects)
+{
+	if (HitList.Num() > 0) {
+		for (FHitResult Hit : HitList) {
+			if (Hit.bBlockingHit) {
+				AHidableObject* Obj = Cast<AHidableObject>(Hit.Actor.Get());
+				if (Obj) {
+					Objects.AddUnique(Obj);
+				}
+			}
+		}
+	}
 }
 
 

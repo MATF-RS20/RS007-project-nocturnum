@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIWaypoint.h"
+#include "NocturnumEnemyBot.h"
 #include "GameFramework/Actor.h"
 #include "GeneralizedRoom.h"
+#include "Kismet/GameplayStatics.h"
 #include "DungeonGenerator.generated.h"
 
 enum DoorwayStatus { BLOCKED, OPEN, REQUIRED };
@@ -146,6 +149,14 @@ public:
 	// Generisi ceo nivo
 	UFUNCTION(BlueprintCallable, Category = "DungeonGenerator")
 		void GenerateDungeon(int32 x, int32 y, int32 start_x, int32 start_y);
+
+	// Inicijalizuj Waypoint-ove
+	UFUNCTION(BlueprintCallable, Category = "DungeonGenerator")
+		void InitializeWaypoints();
+
+	// Inicijalizuj pocetne Waypoint-ove za botove
+	UFUNCTION(BlueprintCallable, Category = "DungeonGenerator")
+		void InitializeBotStartingWaypoints(TArray<AActor*> ActiveWaypoints, int32 NumOfWaypoints);
 
 	bool bigRoomFits(int32 x, int32 y,
 		TArray<FVector2D>& allCells,

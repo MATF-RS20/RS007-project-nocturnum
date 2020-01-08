@@ -50,12 +50,12 @@ public:
 		float PaningMargin = 15;
 		int32 ScreenSizeX;
 		int32 ScreenSizeY;
-		float CamSpeed = 40;
+		float CamSpeed = 80;
 		float CameraLagSpeed = 3.0f;
 		float MaxLagDistance = 30;
-		float MaxZoom = 1000;
+		float MaxZoom = 2000;
 		float MinZoom = 50;
-		float ZoomAmount = 200;
+		float ZoomAmount = 1000;
 		float DesiredArmLenght;
 		float InitialArmLength;
 

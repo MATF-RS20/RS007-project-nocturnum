@@ -21,6 +21,7 @@ void ADungeonGenerator::BeginPlay()
 	int startY = FMath::RandRange(1, 3);
 
 	GenerateDungeon(eastWestCells, northSouthCells, startX, startY);
+	InitializeWaypoints();
 }
 
 // Called every frame
@@ -127,6 +128,56 @@ void ADungeonGenerator::GenerateDungeon(int32 x, int32 y, int32 start_x, int32 s
 	CurrentObjectiveRoom = allObjectives[currentObjectiveIndex];
 	CurrentObjectiveRoom->isAccessible = true;
 
+}
+
+void ADungeonGenerator::InitializeWaypoints()
+{
+	// Ucitaj sve Waypointove u niz
+	TArray<AActor*> ActiveWaypoints;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIWaypoint::StaticClass(), ActiveWaypoints);
+
+	int32 NumOfWaypoints = ActiveWaypoints.Num();
+	UE_LOG(LogTemp, Warning, TEXT("Number of Waypoints detected: %d"), NumOfWaypoints);
+
+	// Ako postoje bar 2 Waypointa, prodji kroz sve i napravi ciklicnu listu od njih
+	if (NumOfWaypoints > 1) {
+		AAIWaypoint* PreviousWaypoint = Cast<AAIWaypoint>(ActiveWaypoints[0]);
+		AAIWaypoint* NextWaypoint = nullptr;
+
+		for (int32 i = 1; i != NumOfWaypoints; i++) {
+			NextWaypoint = Cast<AAIWaypoint>(ActiveWaypoints[i]);
+			PreviousWaypoint->NextWaypoint = NextWaypoint;
+			PreviousWaypoint = NextWaypoint;
+
+			// Postavljamo da poslednji pokazuje na prvi
+			if (i == NumOfWaypoints - 1) {
+				NextWaypoint->NextWaypoint = Cast<AAIWaypoint>(ActiveWaypoints[0]);
+			}
+		}
+		// Postavljamo pocetni Waypoint za svakog lika
+		InitializeBotStartingWaypoints(ActiveWaypoints, NumOfWaypoints);
+	}
+}
+
+void ADungeonGenerator::InitializeBotStartingWaypoints(TArray<AActor*> ActiveWaypoints, int32 NumOfWaypoints)
+{
+	// Ucitaj sve nase likove u niz
+	TArray<AActor*> EnemyBots;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANocturnumEnemyBot::StaticClass(), EnemyBots);
+	int32 NumOfEnemyBots = EnemyBots.Num();
+
+	UE_LOG(LogTemp, Warning, TEXT("Number of Bots detected: %d"), NumOfEnemyBots);
+
+	if (NumOfEnemyBots > 0) {
+		for (int32 i = 0; i != NumOfEnemyBots; i++) {
+			ANocturnumEnemyBot* Bot = Cast<ANocturnumEnemyBot>(EnemyBots[i]);
+			if (Bot != nullptr) {
+				// Postavi nasumicni Waypoint kao pocetni
+				Bot->NextWaypoint = Cast<AAIWaypoint>(ActiveWaypoints[FMath::RandRange(0, NumOfWaypoints - 1)]);
+				UE_LOG(LogTemp, Warning, TEXT("Starting Waypint for Bot %d is: %s"), NumOfEnemyBots, *Bot->NextWaypoint->GetActorLocation().ToString());
+			}
+		}
+	}
 }
 
 bool ADungeonGenerator::bigRoomFits(int32 x, int32 y,

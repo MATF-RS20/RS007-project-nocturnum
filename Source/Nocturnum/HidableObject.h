@@ -27,15 +27,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = Display)
 		float FinalFadeAmount;
 	UPROPERTY(EditAnywhere, Category = Display)
+		float InitialFadeAmount;
+	UPROPERTY(EditAnywhere, Category = Display)
 		float CurrentFade;
 	UPROPERTY(EditAnywhere, Category = Display)
 		float FadeRate;
 	UPROPERTY(EditAnywhere, Category = Material)
 		UMaterial* OpaqueMaterial;
 	UPROPERTY(EditAnywhere, Category = Material)
-		UMaterial* TranslucentMaterial;
-
-
+		UMaterial* DitheredMaterial;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,6 +53,5 @@ private:
 		class UStaticMeshComponent* ObjectMeshComponent;
 
 	virtual void ChangeMeshMaterialToOpaque();
-	virtual void ChangeMeshMaterialToTranslucent();
-
+	virtual void ChangeMeshMaterialToDithered();
 };

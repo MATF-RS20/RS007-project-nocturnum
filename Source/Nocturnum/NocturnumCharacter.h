@@ -63,7 +63,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Health")
 		float HealthRegenRate;
 
-	
+	UFUNCTION()
+		void AddHitsToObjectList(const TArray<FHitResult> &HitList, TArray<AHidableObject*>& Objects);
 
 };
 
