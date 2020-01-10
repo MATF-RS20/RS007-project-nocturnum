@@ -357,8 +357,10 @@ AGeneralizedRoom* ADungeonGenerator::GenerateBigRoom(int32 x, int32 y,
 		int y1 = y + FMath::RandRange(-2, 2);
 		FMath::Clamp(y1, 0, cells_y - 1);
 
-		if (type == START) x1 = x;
-		if (type == START) y1 = y;
+		if (type == START) 
+			x1 = x;
+		if (type == START) 
+			y1 = y;
 
 		int startRotations = 0;
 
