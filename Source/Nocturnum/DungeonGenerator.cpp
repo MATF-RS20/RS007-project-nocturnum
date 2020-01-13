@@ -521,7 +521,9 @@ void ADungeonGenerator::GeneratePath(int32 x0, int32 y0, int32 x1, int32 y1)
 	path.Add(origin);
 
 	cellsToPaths[x0].row[y0].p = path;
-	RowPath rp = RowPath(); rp.p = path; pathQueue.Push(rp);
+	RowPath rp = RowPath(); 
+	rp.p = path; 
+	pathQueue.Push(rp);
 	// uzmi sledecu putanju iz reda
 	while (pathQueue.Num() > 0) {
 		RowPath current = pathQueue.Pop();

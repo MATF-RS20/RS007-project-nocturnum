@@ -46,11 +46,11 @@ public:
 	UFUNCTION()
 		FVector GetCameraPanDirection();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float PaningMargin = 15;
 		int32 ScreenSizeX;
 		int32 ScreenSizeY;
-		float CamSpeed = 80;
+		float CamSpeed = 100;
 		float CameraLagSpeed = 3.0f;
 		float MaxLagDistance = 30;
 		float MaxZoom = 2000;
