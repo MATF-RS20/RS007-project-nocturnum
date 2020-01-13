@@ -33,7 +33,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Health")
 		float GetCurrentHealth();
 
-
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -51,7 +50,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		UDecalComponent* SelectionDecal;
 
-	
+
 	TArray<AHidableObject*> BlockingObjects;
 	virtual void DetectBlockingObjects();
 
@@ -65,6 +64,4 @@ private:
 
 	UFUNCTION()
 		void AddHitsToObjectList(const TArray<FHitResult> &HitList, TArray<AHidableObject*>& Objects);
-
 };
-

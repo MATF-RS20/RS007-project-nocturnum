@@ -17,10 +17,10 @@ AHidableObject::AHidableObject()
 
 	ShouldHide = false;
 	ShouldShow = false;
-	FinalFadeAmount = 0.25f; // Minimum Opacity
+	FinalFadeAmount = 0.425f; // Minimum Opacity
 	InitialFadeAmount = 1.0f;		// Maximum Opacity by default
 	CurrentFade = InitialFadeAmount;
-	FadeRate = 1.50f;		// Rate at which to fade between max and min opacity
+	FadeRate = 2.00f;		// Rate at which to fade between max and min opacity
 	
 	 // Ucitamo transparentni materijal
 	static ConstructorHelpers::FObjectFinder<UMaterial> t_Mat(TEXT("Material'/Game/Materials/MDitheredDefault.MDitheredDefault'"));

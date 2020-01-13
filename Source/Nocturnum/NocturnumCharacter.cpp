@@ -190,25 +190,22 @@ void ANocturnumCharacter::DetectBlockingObjects() {
 	AddHitsToObjectList(Hits7, Objects);
 	AddHitsToObjectList(Hits8, Objects);
 	AddHitsToObjectList(Hits9, Objects);
-
-	for (AHidableObject* Obj : Objects) {
-		Obj->HideObject();
-		ObjectsHitInThisPass.AddUnique(Obj);
-		BlockingObjects.AddUnique(Obj);
-	}
-
-	TArray<AHidableObject*> ObjectsToRemove;
-	for (AHidableObject* Obj : BlockingObjects) {
-		if (!ObjectsHitInThisPass.Contains(Obj)) {
-			Obj->ShowObject();
-			ObjectsToRemove.Add(Obj);
+	if (Objects.Num() > 0) {
+		for (AHidableObject* Obj : Objects) {
+			Obj->HideObject();
+			ObjectsHitInThisPass.AddUnique(Obj);
+			BlockingObjects.AddUnique(Obj);
 		}
-	}
 
-	for (AHidableObject* Obj : ObjectsToRemove) {
-		ObjectsToRemove.Remove(Obj);
+		TArray<AHidableObject*> ObjectsToRemove;
+		for (AHidableObject* Obj : BlockingObjects) {
+			if (!ObjectsHitInThisPass.Contains(Obj)) {
+				Obj->ShowObject();
+				ObjectsToRemove.Add(Obj);
+			}
+		}
+		ObjectsToRemove.Empty();
 	}
-
 }
 
 void ANocturnumCharacter::AddHitsToObjectList(const TArray<FHitResult>& HitList, TArray<AHidableObject*>& Objects)
@@ -224,6 +221,3 @@ void ANocturnumCharacter::AddHitsToObjectList(const TArray<FHitResult>& HitList,
 		}
 	}
 }
-
-
-
