@@ -20,6 +20,7 @@ public:
 	// Sets default values for this actor's properties
 	AHidableObject();
 
+	// Parametri za Fade-ovanje
 	UPROPERTY(BlueprintReadOnly, Category = Display)
 		bool ShouldHide;
 	UPROPERTY(BlueprintReadOnly, Category = Display)
@@ -32,6 +33,8 @@ public:
 		float CurrentFade;
 	UPROPERTY(EditAnywhere, Category = Display)
 		float FadeRate;
+
+	// Materijali
 	UPROPERTY(EditAnywhere, Category = Material)
 		UMaterial* OpaqueMaterial;
 	UPROPERTY(EditAnywhere, Category = Material)
@@ -49,6 +52,7 @@ public:
 	virtual void ShowObject();
 
 private:
+	// 3D komponenta
 	UPROPERTY(EditAnywhere, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 		class UStaticMeshComponent* ObjectMeshComponent;
 

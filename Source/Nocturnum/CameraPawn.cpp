@@ -12,9 +12,11 @@ ACameraPawn::ACameraPawn()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	
 	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
 	RootComponent = RootScene;
 
+	// SpringArm - komponenta pomocu koje pomeramo kameru
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootScene);
 	SpringArm->bDoCollisionTest = false;
@@ -52,12 +54,16 @@ if (GEngine) {
 void ACameraPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	// Funkcija za pomeranja kamera
 	AddActorWorldOffset(GetCameraPanDirection() * CamSpeed);
 
+	// Interpolacija pri zoomovanju
 	if (!FMath::IsNearlyEqual(SpringArm->TargetArmLength, DesiredArmLenght, 0.5f)) {
 		SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, DesiredArmLenght, DeltaTime, 5.0);
 	}
 	
+	// Pritiskom na Q ili E dodajemo naredbu za rotiranje u red
+	// Izvrsavamo naredbe iz reda jednu po jednu. Svaku izbacujemo po zavrsetku rotacije
 	if (ResettingRotation == false) {
 		if (RotationQueue.IsEmpty() == false) {
 			RotationQueue.Peek(NextRotation);
@@ -100,6 +106,7 @@ void ACameraPawn::Tick(float DeltaTime)
 			}
 		}
 	}
+	// Ako je data naredba za resetovanje
 	else {
 		RotationFactor += DeltaTime / 0.15;
 		float v = FMath::Lerp<float>(Stamp, InitialRotation.Yaw, RotationFactor);
@@ -149,6 +156,8 @@ void ACameraPawn::RotateLeft() {
 void ACameraPawn::RotateRight() {
 	RotationQueue.Enqueue(-1);
 }
+
+// Vracanje kamere u pocetni zoom i pocetnu rotaciju
 void ACameraPawn::ResetCamera() {
 	NextRotation = 0;
 	RotationQueue.Empty();
@@ -164,8 +173,11 @@ FVector ACameraPawn::GetCameraPanDirection()
 	float MousePositionY;
 	float CamDirectionX = 0;
 	float CamDirectionY = 0;
+
+	// Ucitamo poziciju strelice misa u 'MousePositionX' i 'MousePositionY'
 	PC->GetMousePosition(MousePositionX, MousePositionY);
 
+	// Proverimo da li je strelica na ivici ekrana
 	if (MousePositionX <= PaningMargin) {
 		CamDirectionY = -1;
 	}
@@ -182,11 +194,13 @@ FVector ACameraPawn::GetCameraPanDirection()
 		CamDirectionX = -1;
 	}
 	
+	// Koren iz 2 zbog iste brzine pri dijagonalnom kretanju
 	if (CamDirectionX != 0 && CamDirectionY != 0) {
 		CamDirectionX /= 1.41421356237;
 		CamDirectionY /= 1.41421356237;
 	}
 
+	// Pomeramo kameru u pravcu misa
 	FRotator CurrentDirectionRotation = SpringArm->GetComponentRotation();
 	return FVector(CamDirectionX, CamDirectionY, 0).RotateAngleAxis(CurrentDirectionRotation.Yaw, FVector(0.0, 0.0, 1.0));
 }

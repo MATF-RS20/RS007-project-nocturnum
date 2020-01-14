@@ -17,10 +17,10 @@ AHidableObject::AHidableObject()
 
 	ShouldHide = false;
 	ShouldShow = false;
-	FinalFadeAmount = 0.425f; // Minimum Opacity
-	InitialFadeAmount = 1.0f;		// Maximum Opacity by default
+	FinalFadeAmount = 0.425f; // Minimalna vidljivost
+	InitialFadeAmount = 1.0f;		// Maksimalna vidljivost
 	CurrentFade = InitialFadeAmount;
-	FadeRate = 2.00f;		// Rate at which to fade between max and min opacity
+	FadeRate = 2.00f;		// Brzina promene vidljivosti
 	
 	 // Ucitamo transparentni materijal
 	static ConstructorHelpers::FObjectFinder<UMaterial> t_Mat(TEXT("Material'/Game/Materials/MDitheredDefault.MDitheredDefault'"));
@@ -51,22 +51,23 @@ void AHidableObject::Tick(float DeltaTime)
 	if (ShouldHide) {
 		CurrentFade -= DeltaTime * FadeRate;
 
-		// If CurrentFade is less then our desired FinalFadeAmount, cap it off and tell this wall to stop hiding
+		// Ako je trenutna vidljivost manja od minimalne, odseci je i reci objektu da prestane da se krije
 		if (CurrentFade < FinalFadeAmount) {
 			CurrentFade = FinalFadeAmount;
 			ShouldHide = false;
 		}
-		// Set the translucent material's Opacity property to CurrentFade
+		// Postavi vidljivost providnog materijala na trenutnu vidljivost
 		ObjectMeshComponent->SetScalarParameterValueOnMaterials(TEXT("DitherOpacity"), CurrentFade);
 
 
 	}
-	// If this wall should be showing, increment CurrentFade by our FadeRate
+	// Ako objekat treba da bude vidljiv, uvecaj mu vidljivost
 	else if (ShouldShow) {
 		CurrentFade += DeltaTime * FadeRate;
 
-		// If CurrentFade is more then 1.0 (maximum opacity), cap it off and tell this wall to stop showing
-		// If you're using an opaque material for normal display purposes, change the material back now
+
+		// Ako je trenutna vidljivost veca od maksimalne, odseci je i reci objektu da se ne prikazuje vise
+		// Promeni materijal na solidni kad dodjes do maksimalne vidljivosti
 		if (CurrentFade > 1.0f) {
 			CurrentFade = 1.0f;
 			ShouldShow = false;

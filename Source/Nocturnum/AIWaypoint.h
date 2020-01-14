@@ -33,6 +33,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Funkcija koja se pozove kada se detektuje kolizija izmedju Bota i ovog objekta
 	UFUNCTION()
 		void OnPlayerEnter(UPrimitiveComponent* OverlapComponent,
 							AActor* OtherActor,

@@ -13,34 +13,34 @@
 
 ANocturnumCharacter::ANocturnumCharacter()
 {
-	// Set size for player capsule
+	// Velicina kapsule like
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
-	// Don't rotate character to camera direction
+	// Iskljuci rotaciju lika u pravac u kom gleda kamera
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Configure character movement
+	// Podesavanje kretanja
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
-	// Create a camera boom...
+	// Prateca kamera...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->bAbsoluteRotation = true; // Don't want arm to rotate when character does
+	CameraBoom->bAbsoluteRotation = true; // Ne rotiraj kameru kad rotiras lika
 	CameraBoom->TargetArmLength = 800.f;
 	CameraBoom->RelativeRotation = FRotator(-60.f, 0.f, 0.f);
-	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+	CameraBoom->bDoCollisionTest = false; // Iskljuci koliziju kamere sa svetom
 
-	// Create a camera...
+	// Kreiranje kamere...
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// Create a decal in the world to show the cursor's location
+	// Pravljenje dekala koji odredjuje poziciju na koju lik treba da dodje
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->SetupAttachment(RootComponent);
 	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
@@ -53,7 +53,7 @@ ANocturnumCharacter::ANocturnumCharacter()
 	CursorToWorld->SetVisibility(false);
 
 
-	//Create a selection ring decal
+	//Pravljenje prstenastog dekala
 	SelectionDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("Selection Decal"));
 	SelectionDecal->SetupAttachment(RootComponent);
 
@@ -61,7 +61,7 @@ ANocturnumCharacter::ANocturnumCharacter()
 	if (DecalMaterial.Succeeded()) {
 		SelectionDecal->SetDecalMaterial(DecalMaterial.Object);
 
-		// Izracunatri parametri
+		// Izracunati parametri
 		SelectionDecal->RelativeLocation = FVector(0.f, 0.f, -80.f);
 		SelectionDecal->DecalSize = FVector(32.f, 64.f, 64.f);
 		SelectionDecal->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
@@ -69,11 +69,11 @@ ANocturnumCharacter::ANocturnumCharacter()
 	}
 
 
-	// Activate ticking in order to update the cursor every frame.
+	// Ukljuci tick
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	// Health parameters
+	// Health 
 	MaxHealth = 100.0f;
 	CurrentHealth = MaxHealth;
 	HealthRegenRate = 0.0f;

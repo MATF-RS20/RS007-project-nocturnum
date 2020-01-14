@@ -34,6 +34,7 @@ void AAIWaypoint::Tick(float DeltaTime)
 
 }
 
+// Postavlja se sledeci Waypoint kada Bot useta u trenutni postavljeni
 void AAIWaypoint::OnPlayerEnter(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, 
 								int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {

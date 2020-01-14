@@ -24,6 +24,8 @@ public:
 		float BulletSpeed;
 	UPROPERTY(EditAnywhere, Category = Material)
 		UMaterial* BulletMaterial;
+
+	//Smer u kojem ce se metak kretati
 	UPROPERTY()
 		FVector MovementDirection;
 	UFUNCTION()
@@ -37,6 +39,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// 3D komponenta
 	UPROPERTY(EditAnywhere, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 		class UStaticMeshComponent* ObjectMeshComponent;
 	
